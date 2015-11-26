@@ -1,7 +1,7 @@
 # Language: Ruby, Level: Level 4
 
 ##
-## Übungsbetrieb vom 5.11.2015
+## Übungsbetrieb vom 25.11.2015
 ##
 ##   alle mit `#` beginnenden Zeilen sind Kommentare
 ##
