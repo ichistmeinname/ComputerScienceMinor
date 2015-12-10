@@ -1,21 +1,18 @@
-# Language: Ruby, Level: Level 1
+# Language: Ruby, Level: Level 4
 
 ##
-## Übungsbetrieb vom 5.11.2015
+## Übungsbetrieb vom 4.11.2015
 ##
 ##   alle mit `#` beginnenden Zeilen sind Kommentare
 ##
-
 
 #
 ## Präsenzaufgabe 1
 #
 
-
 #
 ## Präsenzaufgabe 2
 #
-
 
 #
 ## Präsenzaufgabe 3
