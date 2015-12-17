@@ -117,10 +117,9 @@ while choice!=main_menue.size do
       msgs2 = msgs2 + [msgs[i][2]];
     end;
     msgIdx = menue(msgs2) - 1;
-    fwdName = msgs[msgIdx][0];
     fwdTime = msgs[msgIdx][1];
     fwdMsg = msgs[msgIdx][2]
-    input = "FWD von " + fwdName + " um " + fwdTime + "\n" + fwdMsg;
+    input = "FWD um " + fwdTime + "\n" + fwdMsg;
     sent = sent + [[name,Time.now.to_s,input]];
     csv_write(sent_file,sent);
   else
