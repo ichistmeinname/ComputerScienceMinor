@@ -240,8 +240,9 @@ module SQLiteWrapper
 
     def initialize(query, database, options)
       @options  = options
-      @query    = sanitize_query(query)
+      @query    = query.strip
       @database = database
+      @table_aliases = {}
     end
 
     def to_a
@@ -320,6 +321,13 @@ module SQLiteWrapper
     end
 
     #
+    # @return [String] the name a table is aliased as (if any)
+    #
+    def dealiased_table_name(table)
+      table =~ /(.*) as (.*)/i ? @table_aliases[$2] : @table_aliases[table] || table
+    end
+
+    #
     # Gathers all necessary information from insert queries
     #
     # @return [Hash]
@@ -350,16 +358,18 @@ module SQLiteWrapper
     #     :aliases => Used aliases as Hashes
     #
     def select_information
+      sanitized_query = sanitize_query(@query)
+
       global_function_query = Regexp.new("select\s+#{regexp(:global_function)}(.*);", 'i')
       simple_query          = /select\s+(.*)\s+from\s+(.*);/i
       complex_query         = /select\s+(.*)\s+from\s+(.*)\s+(where|order)\s+(.*);/i
       simple_join_query     = /select\s+(.*)\s+from\s+(.*)\s+inner join\s+(.*)\s+on\s+.*;/i
       complex_join_query    = /select\s+(.*)\s+from\s+(.*)\s+inner join\s+(.*)\s+on\s+.*(where|order)\s+(.*);/i
 
-      m1 = complex_join_query.match(@query)
-      m2 = simple_join_query.match(@query)
-      mg = global_function_query.match(@query)
-      m  = m1 || m2 || complex_query.match(@query) || simple_query.match(@query)
+      m1 = complex_join_query.match(sanitized_query)
+      m2 = simple_join_query.match(sanitized_query)
+      mg = global_function_query.match(sanitized_query)
+      m  = m1 || m2 || complex_query.match(sanitized_query) || simple_query.match(sanitized_query)
 
       if mg
         fail 'Global functions are currently not supported.'
@@ -373,15 +383,20 @@ module SQLiteWrapper
           table_names = table_names + split_n_strip(m[3])
         end
 
-        table_names.each do |t|
-          unless table_exists?(t)
-            raise_table_not_found(t)
+        for i in 0.. table_names.size-1
+          if table_names[i] =~ /(.*) as (.*)/i
+            @table_aliases[$2] = $1
+            table_names[i] = $1
           end
+        end
+
+        table_names.each do |t|
+          raise_table_not_found(dealiased_table_name(t)) unless table_exists?(dealiased_table_name(t))
         end
 
         column_names = []
         split_n_strip(m[1]).each do |cn|
-          #Format: "table_name.column_name"
+          #Format: "column_name as alias"
           if cm = cn.match(/(.*) as (.*)/i)
             column_names << infer_table_and_column(cm[1], table_names)
             aliases[cm[2]] = cm[1]
@@ -438,7 +453,7 @@ module SQLiteWrapper
     def infer_table_and_column(column_string, tables)
       #format: table.column
       if m = column_string.match(/^([a-zA-Z_]+)\.([a-zA-Z_]+)$/i)
-        table, column = m[1], m[2]
+        table, column = dealiased_table_name(m[1]), m[2]
         if table_has_column?(table, column)
           [table, column]
         else
