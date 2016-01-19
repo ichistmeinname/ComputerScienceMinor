@@ -13,7 +13,7 @@ while command != ".quit" do
   print("sqlite> ")
   command = gets.chop
   begin
-    use_database("../../filmdatenbank.db") do |db|
+    use_database("../imdb") do |db|
       if command != ".quit" then
         table = db.execute(command)
         for i in 0..table.size-1 do

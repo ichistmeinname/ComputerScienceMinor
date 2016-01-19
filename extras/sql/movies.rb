@@ -1,5 +1,5 @@
 # Language: Ruby, Level: Level 4
-require_relative "../SQLChat/sqlite_connector"
+require_relative "../sqlite_connector"
 
 def setup(db)
  # if the following tables do not exist, create them

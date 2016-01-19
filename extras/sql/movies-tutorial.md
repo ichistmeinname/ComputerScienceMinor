@@ -1,5 +1,11 @@
 **Hinweis:** Das komplette Ruby-Programm können Sie unter **(e)** anzeigen.
 
+Bevor wir die erste (sinnvolle) Zeile Code schreiben, müssen wir den `sqlite_connector` einbinden, da wir diesen benötigen, um später mit der Datenbank zu kommunizieren. Wir gehen dabei davon aus, dass sich die Datei `sqlite_connector.rb` im gleichen Verzeichnis befindet wie die Datei, die wir im Folgenen schreiben wollen.
+
+~~~~{.ruby}
+require_relative "../sqlite_connector"
+~~~~
+
 ### Daten programmatisch in die Datenbank eintragen
 
 Zunächst legen wir uns Hilfsfunktionen an, die die entsprechenden Tabellen anlegen (insofern sie nicht schon angelegt worden sind).
