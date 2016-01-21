@@ -83,7 +83,7 @@ end;
 
 # Finds maximum element of an array `a`,
 #  beginning from `0` ending with `pos`
-def max_pos_from(a,pos)
+def max_pos_until(a,pos)
   max_pos = pos;
   for i in 0..pos-1 do
     if a[i] > a[max_pos] then
@@ -100,7 +100,7 @@ def max_sort!(a)
     #   a.size - (a.size - 1)
     # = a.size - a.size + 1
     # = 1
-    pos = max_pos_from(a,j);
+    pos = max_pos_until(a,j);
     swap!(a,pos,j);
   end;
   return a;
@@ -154,17 +154,17 @@ end;
 
 # Helper function to print runtime of
 #  sorting functions as floating value;
-#  the value is printed with maximal two
-#  digits left and exactly four digts right
-#  of the decimal point
+#  the value is printed with overall seven
+#  digits and exactly four digts right
+#  of the decimal point, the `-`-sign
+#  identifies left-justified output
 def print_float(val)
-  printf('%2.4f',val);
+  printf('%7.4f',val);
 end;
 
 # Helper function to print array_size
 #  when testing runtime of sorting functions;
 #  the value is printed with maximal 6 digits
-#  left of the decimal point
 def print_array_size(val)
   printf('%6d',val);
 end;
@@ -173,37 +173,48 @@ end;
 #  value bound of the random generated array elements
 #  and an iteration bound, which sets the number of
 #  iteration the array size is doubled.
-def test_runtime(array_size,value_bound,iteration_bound)
+def test_runtime(size,bound,iterations)
 
   # table header
   puts(" Arraygröße | ins_sort! | max_sort! | min_sort! ");
   puts("------------------------------------------------");
 
   # measure runtime for the three sorting algorithms
-  for i in 0..iteration_bound do
+  for i in 0..iterations-1 do
+
+    array_size = (2**i) * size;
     # generate random array
-    test_array = random_array((2**i) * array_size,value_bound);
+    test_array = random_array(array_size,bound);
+    # since all sorting functions are mutable
+    #  functions, we have to copy the generated
+    #  array in order to use the same array_size
+    #  for all sorting functions; otherwise
+    #  the second sorting function will work
+    #  on an already sorted array.
 
     # measure runtime for `ins_sort!`
+    ins_sort_array = test_array.clone;
     ins_sort_time = Time.now;
     ins_sort!(test_array);
     ins_sort_time = Time.now - ins_sort_time;
 
     # measure runtime for `max_sort!`
+    max_sort_array = test_array.clone;
     max_sort_time = Time.now;
     max_sort!(test_array);
     max_sort_time = Time.now - max_sort_time;
 
     # measure runtime for `min_sort!`
+    min_sort_array = test_array.clone;
     min_sort_time = Time.now;
     min_sort!(test_array);
     min_sort_time = Time.now - min_sort_time;
 
     # pretty print table output
     tab1 = " " * 3;
-    tab2 = " " * 6;
+    tab2 = " " * 4;
     print(tab1);
-    print_array_size((2**i) * 1000);
+    print_array_size(array_size);
     print(tab2);
     print_float(ins_sort_time);
     print(tab2);
@@ -215,8 +226,4 @@ def test_runtime(array_size,value_bound,iteration_bound)
 end;
 
 # Main function to measure runtime
-test_runtime(1000,1000,4);
-
-#
-## Präsenzaufgabe 3
-#
+test_runtime(1000,1000,5);
