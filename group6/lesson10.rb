@@ -1,7 +1,7 @@
 # Language: Ruby, Level: Level 4
 
 ##
-## Übungsbetrieb vom 4.11.2015
+## Übungsbetrieb vom 27.01.2016
 ##
 ##   alle mit `#` beginnenden Zeilen sind Kommentare
 ##
@@ -55,15 +55,17 @@ def qsort_h(a,l ,r)
         k = k-1;
       end;
     end;
+    # a = [4, 23, 6, 2, 7, -1, 10, 17, 6, 3, 8, 14, 20, 9, 1]
     # Verschiebe Pivot−Element in die Mitte
     b[j] = a[l];
+    # b = [2,-1,3,1,  4,  9,20,14,8,6,17,10,7,6,23]
+
     # Array bis Indexposition `j-1` sortiert
     c = qsort_h(b,l,j-1);
-    # arr = [4, 23, 6, 2, 7, -1, 10, 17, 6, 3, 8, 14, 20, 9, 1]
     # Pivot: 4 für arr       | l := 0; j-1 := 3;
     #                        | j+1 = 5; r := arr.size -1;
-    # c = [-1,1,2,  3  ,4,23,6,7,10,17,6,8,14,20,9]
-    #      l      (j-1)
+    # c = [-1,1,2,  3  ,4,  9  ,20,14,8,6,17,10,7,6,23]
+    #      l      (j-1) j,(j+1)
     return qsort_h(c,j+1,r);
   end;
 end ;
